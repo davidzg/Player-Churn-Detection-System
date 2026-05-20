@@ -101,7 +101,7 @@ The Random Forest model revealed that churn is not a monolithic event. By analyz
 
 <p align="center">
   <img src="Images/cluster2_shap.png" alt="alt text" width="49%">
-  <img src="Images/cluster4_shap.png" alt="alt text" width="49%">
+  <img src="Images/cluster0_shap.png" alt="alt text" width="49%">
 </p>
 
 -  The "Frustrated" (Cluster 2) players with very low win rate. Their SHAP plot shows that `Win_rate` has a higher negative impact here than in other groups. They are hitting a "difficulty wall" early and quitting out of frustration. 
