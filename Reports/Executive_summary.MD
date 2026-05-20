@@ -1,11 +1,11 @@
 # Executive Summary: Player Churn & Retention Strategy
 ## The Big Picture
-In the hyper-competitive mobile gaming market, losing a player (churn) is more than a lost metric—it’s lost revenue and community vitality. This project moves beyond generic "please come back" emails by using Machine Learning to understand who is leaving and why.
+In the mobile gaming market, losing a player (churn) is more than a lost metric—it’s lost revenue and community vitality. This project moves beyond generic "please come back" emails by using Machine Learning to understand who is leaving and why.
 
-By combining Unsupervised Clustering with Supervised Random Forest modeling, we’ve developed a system that identifies at-risk players with 74% accuracy (Recall) and categorizes them into actionable behavioral archetypes.
+By combining Unsupervised Clustering with Supervised Random Forest modeling, I’ve developed a system that identifies at-risk players with 77% accuracy (Recall) and categorizes them into actionable behavioral archetypes.
 
 ## 1. Player Archetypes: Who are we losing?
-We identified 6 distinct player types. Two represent 80% of our churn risk:
+I identified 6 distinct player types. Two represent 80% of our churn risk:
 |Archetype|Risk|The Cause|Strategic Fix|
 |---|---|---|---|
 |The Bored|🔴 Critical|High skill/wins, but low activity.|New challenges / Hard Mode.|
@@ -14,7 +14,7 @@ We identified 6 distinct player types. Two represent 80% of our churn risk:
 ## 2. Why They Leave (Key Drivers)
 Analysis shows that winning isn't why players stay—engagement is.
 1. Play Intensity is the main predictor. A drop in session frequency is a signal they are churning.
-2. Players with a high `Card_score` have a "barrier to exit" and rarely leave.
+2. Players with a high `Card_score` and `Gems` balance have a "barrier to exit" and rarely leave.
 3. If a player stops moving through the campaigns, they churn regardless of their gem balance.
 ## 3. Strategic Recommendations
 - **Automated Interventions:** Deploy the model to flag "Bored" or "Frustrated" players in real-time.
@@ -29,5 +29,5 @@ Analysis shows that winning isn't why players stay—engagement is.
   <img src="../Images/confusion_matrix.png" alt="alt text">
 </p>
 
-- 74% Recall: We catch the vast majority of churners.
-- 52% Precision: While we may "over-gift" some active players, the cost of a small reward is significantly lower than the cost of losing a player’s Lifetime Value (LTV).
+- **77% Recall:** The model catch the vast majority of churners.
+- **52% Precision:** While the model may "over-gift" some active players, the cost of a small reward is significantly lower than the cost of losing a player’s Lifetime Value (LTV).
