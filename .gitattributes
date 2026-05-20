@@ -1,7 +1,0 @@
- # Force to detect SQL files and count them in the language statistics
-*.sql linguist-detectable=true
-*.sql linguist-language=SQL
-
-# Ensure Python files are properly tracked (usually automatic, but good to lock in)
-*.py linguist-detectable=true
-*.py linguist-language=Python
