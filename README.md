@@ -50,12 +50,12 @@ In this project, a K-Means clustering was applied to a dataset of 17,000+ player
 
 |Cluster|Name|Risk Level|Key Characteristics|Behavioral Insights|
 |---|---|---|---|---|
-|4|New Players|Neutral|Lowest tenure (-1.36), high play intensity (+0.59), high win rates.|Currently getting out of the FTUE phase. Future retention depends on how they handle upcoming difficulty spikes.|
+|0|Bored|Critical|Highest churn risk (+0.63), lowest intensity (-1.03), high win rate (+0.88).|Top priority. They find the game too easy or unengaging. They need end-game content or difficulty scaling to prevent immediate churn.|
 |1|Grinders|Safe (Low)|High tenure (+0.60), lowest VIP level (-0.86), consistent progress.|Classic Free-to-Play veterans. They don't spend money but provide high value through long-term engagement and time investment.|
 |2|Frustrated|Elevated|Lowest win rate (-1.28), low play intensity, low gem count.|Struggling to win or progress. They are likely hitting a wall and are at high risk of quitting due to poor game experience.|
-|5|Fans|Safe (Very Low)|Max tenure (+1.37), VIP (+1.20), and progress (+1.25).|The most valuable users and long-term fans. Deeply invested financially and emotionally, despite a slightly below-average win rate.|
-|0|Bored|Critical|Highest churn risk (+0.63), lowest intensity (-1.03), high win rate (+0.88).|Top priority. They find the game too easy or unengaging. They need end-game content or difficulty scaling to prevent immediate churn.|
 |3|Fast Progress|Safest|Highest intensity (+0.89), high VIP level (+1.01), low tenure.|Relatively new players who are aggressively buying their way to the top. They are hyper-engaged and currently the most stable group.|
+|4|New Players|Neutral|Lowest tenure (-1.36), high play intensity (+0.59), high win rates.|Currently getting out of the FTUE phase. Future retention depends on how they handle upcoming difficulty spikes.|
+|5|Fans|Safe (Very Low)|Max tenure (+1.37), VIP (+1.20), and progress (+1.25).|The most valuable users and long-term fans. Deeply invested financially and emotionally, despite a slightly below-average win rate.|
 
 
 
