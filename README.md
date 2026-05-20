@@ -10,9 +10,24 @@ The goal of this project is to develop a robust churn detection system for a mob
 **[Read the Executive Summary for Stakeholders](Reports/Executive_summary.MD)**
 
 ## Project Workflow
-### 1. Data Ingestion and Cleaning
-Query Logic: [1_read_df.sql](1_read_df.sql)
-- This stage focuses on consolidating three primary data sources: general.csv, cards.csv, and campaigns.csv.
+
+### 1. Data Anonymization & Extraction
+This project uses real, production-level game data. To comply with data privacy standards, the data was strictly anonymized resulting in four core datasets (general, cards, tutorial, and campaigns)
+
+### 2: Data Ingestion (Cloud Storage)
+
+Data Ingestion Script: [1_data_ingestion.py](1_data_ingestion.py)
+
+In this stage the anonymized data was ingested into BigQuery to handle the scale of the data efficiently.
+
+![alt text](Images/BigQuery.png)
+*Google BigQuery console displaying the active schema architecture and storage details for the 5.1-million-row card dataset.*
+
+### 3. Data Transformation and Preparation
+
+Query Logic: [2_read_df.sql](2_read_df.sql)
+
+- This stage focuses on consolidating three primary data tables from BigQuery: general, cards, and campaigns.
 
 - Players with impossible statistics (e.g., negative Gold/Gems or excessive play intensity) are removed to ensure data integrity.
 
@@ -22,8 +37,8 @@ Query Logic: [1_read_df.sql](1_read_df.sql)
 
 - Custom metrics like `Card_score` (normalized power across rarities) and `Overall_progress` (campaign completion percentage) are engineered and merged into a master dataframe.
 
-### 2. Feature Engineering & Machine Learning
-#### 2.1. Feature selection
+### 3. Feature Engineering & Machine Learning
+#### 3.1. Feature selection
 
 - `Overall_progress`: It summarizes how deep into the game the player is.
 
@@ -37,9 +52,9 @@ Query Logic: [1_read_df.sql](1_read_df.sql)
 
 - `Gems`: Player with high gem balance are more likely to stay engaged with the game than those with low balance.
 
-- `Tenure`: It represents for how long have been the players around. It tells if a player have just finished the FTUE or if it an experienced player.
+- `Tenure`: It represents for how long have been the players around. It tells if a player have just finished the FTUE or if they are an experienced player.
 
-#### 2.2. Unsupervised profiling (K-Means clustering)
+#### 3.2. Unsupervised profiling (K-Means clustering)
 In this project, a K-Means clustering was applied to a dataset of 17,000+ players to move beyond "one-size-fits-all" marketing and identify high-value behavioral segments. While mathematical metrics like the Silhouette Score initially suggested a broad 2-cluster split, a 6-cluster model was selected. This decision was driven by a local peak in the Silhouette metric and a need for greater granularity, which successfully uncovered distinct archetypes that a 2-cluster model would have obscured.
 
 <p align="center">
@@ -59,12 +74,12 @@ In this project, a K-Means clustering was applied to a dataset of 17,000+ player
 
 
 
-#### 2.3. Supervised Prediction (RandomForest)
-Notebook: [2_modeling.ipynb](2_modeling.ipynb)
+#### 3.3. Supervised Prediction (RandomForest)
+Notebook: [3_modeling.ipynb](3_modeling.ipynb)
 
 To validate the clustering, the `Cluster` ID is included as a feature in the Random Forest. Note that this variable is a raw number (no One-Hot encoded), as the Random Forest's structure is robust enough to handle these integer labels as decision splits.
 
-The target variable has a class inbalance of 73/27, meaning the users flagged as churned are less represented in the data set. This would introduce bias in the model if not adressed. To solve this the model uses `class_weight='balanced'` within the RandomForestClassifier.
+The target variable has a class imbalance of 73/27, meaning the users flagged as churned are less represented in the data set. This would introduce bias in the model if not addressed. To solve this the model uses `class_weight='balanced'` within the RandomForestClassifier.
 
 
 ##### **Random Forest Model performance**
@@ -105,7 +120,7 @@ By analyzing SHAP values across clusters, we discovered that Cluster 0 ('Bored')
 
 - The K-Means model correctly identified the "Frustrated" (cluster 2) by their very low global win rate. Once the Random Forest isolates those players, it realizes that their lack of playtime and progress is what actually determines their decision to quit, while minor bumps in their win rate might just be the clue that highlights how stuck they truly are. 
 
-- The "Bored" (Cluster 0) players are winning more than average, but they aren't playing much. They are "bored winners." They likely haven't found the progression loop isn't compelling enough to make them spend their time.
+- The "Bored" (Cluster 0) players are winning more than average, but they aren't playing much. They are "bored winners." They likely find that the progression loop isn't compelling enough to make them spend their time.
 
 
 ## Key Insights for Stakeholders
@@ -122,7 +137,7 @@ By analyzing SHAP values across clusters, we discovered that Cluster 0 ('Bored')
 
 - Implement the model to identify users at risks before they leave, and perform Re-engagement campaigns according to their archetype.
 
-- Targeted at the "Furstated" Cluster 2:
+- Targeted at the "Frustrated" Cluster 2:
 
     - Implement a Dynamic Difficulty Adjustment (DDA) system, where players in this cluster losing multiple times in a row, get subtly decreased difficulty specifically to unblock a progression milestone, rather than just giving them an empty win.
 
