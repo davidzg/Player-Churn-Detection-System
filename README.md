@@ -64,12 +64,12 @@ Notebook: [2_modeling.ipynb](2_modeling.ipynb)
 
 To validate the clustering, the `Cluster` ID is included as a feature in the Random Forest. Note that this variable is a raw number (no One-Hot encoded), as the Random Forest's structure is robust enough to handle these integer labels as decision splits.
 
-The target variable has a class inbalance of 74/26, meaning the users flagged as churned are less represented in the data set. This would introduce bias in the model if not adressed. To solve this the model uses `class_weight='balanced'` within the RandomForestClassifier.
+The target variable has a class inbalance of 73/27, meaning the users flagged as churned are less represented in the data set. This would introduce bias in the model if not adressed. To solve this the model uses `class_weight='balanced'` within the RandomForestClassifier.
 
 
 ##### **Random Forest Model performance**
 
-The model achieved a Recall of 74%, ensuring that the majority of players at-risk are identified for retention campaigns. While the Precision of 52% indicates a high number of false positives, this is an acceptable trade-off in a churn context where the cost of player loss outweighs the cost of unnecessary engagement
+The model achieved a Recall close to 77%, ensuring that the majority of players at-risk are identified for retention campaigns. While the Precision of 52% indicates a high number of false positives, this is an acceptable trade-off in a churn context where the cost of player loss outweighs the cost of unnecessary engagement
 
 <p align="center">
   <img src="Images/confusion_matrix.png" alt="alt text">
@@ -83,30 +83,29 @@ The model achieved a Recall of 74%, ensuring that the majority of players at-ris
 </p>
 
 
-* Play_intensity is the clear leader: The wide horizontal spread (from -0.20 to +0.15) shows this is the most influential factor.
-    - High intensity (red) is pushed far to the left (negative SHAP). This means high engagement is a massive "retention shield" against churn.
+* `Play_intensity` is the clear leader. The wide horizontal spread shows this is the most influential factor. High play intensity (red) is pushed far to the left (negative SHAP), meaning high engagement creates a "retention shield" against churn.
     
-- Once a player invests enough to get a high card score `Card_score` or deep progress `Overall_progress` (red), they are significantly less likely to leave. The "barrier to exit" is high.
+- Once a player invests enough to get a high card score `Card_score` or deep progress `Overall_progress`, they are significantly less likely to leave.
 
-- SHAP analysis revealed that the `Cluster` assignment was the #4 most influential predictor of churn. This proves that the archetypes identified by K-Means captured unique behavioral contexts that are critical for accurate prediction.
+- The SHAP plot revealed that the `Cluster` assignment is the #4 most influential predictor of churn. This proves that the archetypes identified by K-Means captured unique behavioral contexts that are critical for accurate prediction.
 
-- The `Gems` are clustered around the center but lean slightly negative. This suggests that while having gems helps, it's not a good retention shield if the player isn't actually playing or progressing.
+- The `Gems` lean slightly negative. This suggests that while having gems helps, it's not a good retention shield if the player isn't actually playing or progressing.
 
-- `Win_rate` is surprisingly low: This is a huge finding. It suggests players don't necessarily quit because they lose; they quit because they stop engaging with the core loops (Intensity/Progress).
+- `Win_rate` has surprisingly low impact on the model's prediction. It suggests players don't necessarily quit because they lose; they quit because they stop engaging with the core loops (Intensity/Progress).
 
 
 ##### **SHAP analysis of archetypes at risk**
 
-The Random Forest model revealed that churn is not a monolithic event. By analyzing SHAP values across clusters, it was discovered that Cluster 4 (Bored) players churn due to stagnation (high win rate but low intensity), while Cluster 2 (Frustrated) players churn due to friction (low win rate and low progression). This proves that a single retention campaign across all users would fail; the "Bored" players need a challenge, while the "Frustrated" players need support.
+By analyzing SHAP values across clusters, we discovered that Cluster 0 ('Bored') players churn due to stagnation (winning often, but playing rarely), while Cluster 2 ('Frustrated') players churn due to friction (low win rates that halt progression). This divergence highlights that a single retention campaign across all users will fail. To improve retention, we must split our approach: the 'Bored' players need a new challenge, while the 'Frustrated' players need progression support.
 
 <p align="center">
   <img src="Images/cluster2_shap.png" alt="alt text" width="49%">
   <img src="Images/cluster0_shap.png" alt="alt text" width="49%">
 </p>
 
--  The "Frustrated" (Cluster 2) players with very low win rate. Their SHAP plot shows that `Win_rate` has a higher negative impact here than in other groups. They are hitting a "difficulty wall" early and quitting out of frustration. 
+- The K-Means model correctly identified the "Frustrated" (cluster 2) by their very low global win rate. Once the Random Forest isolates those players, it realizes that their lack of playtime and progress is what actually determines their decision to quit, while minor bumps in their win rate might just be the clue that highlights how stuck they truly are. 
 
-- The "Bored" (Cluster 4) players are winning more than average, but they aren't playing much. They are "bored winners." They likely haven't found the progression loop isn't compelling enough to make them spend their time.
+- The "Bored" (Cluster 0) players are winning more than average, but they aren't playing much. They are "bored winners." They likely haven't found the progression loop isn't compelling enough to make them spend their time.
 
 
 ## Key Insights for Stakeholders
@@ -116,7 +115,7 @@ The Random Forest model revealed that churn is not a monolithic event. By analyz
 
 - Players who aren't making progress or building their card collection early on are the most likely to drop off.
 
-- The model has high Recall 74% (it's catching most churners) but lower Precision 52% (it's flagging many non-churners as "at risk"). For a churn system, it's better to send a gift to a loyal player than to miss a player who is actually leaving.
+- The model has high Recall 77% (it's catching most churners) but lower Precision 52% (it's flagging many non-churners as "at risk"). For a churn system, it's better to send a gift to a loyal player than to miss a player who is actually leaving.
 
 
 ## Strategic Recommendations
@@ -124,30 +123,31 @@ The Random Forest model revealed that churn is not a monolithic event. By analyz
 - Implement the model to identify users at risks before they leave, and perform Re-engagement campaigns according to their archetype.
 
 - Targeted at the "Furstated" Cluster 2:
-  - Implement a Dynamic Difficulty Adjustment (DDA). If a player in this cluster loses 3 times in a row, subtly decrease the difficulty or give them a temporary buff.
 
-  - Implement Pity Mechanics. Offer "rebound" rewards after a loss streak to keep their Gems or `Card_score` moving upward despite the losses.
+    - Implement a Dynamic Difficulty Adjustment (DDA) system, where players in this cluster losing multiple times in a row, get subtly decreased difficulty specifically to unblock a progression milestone, rather than just giving them an empty win.
 
-- Targeted at the "Bored" Cluster 4:
-  - Introduce daily login rewards or time-sensitive events specifically targeted at this cluster to increase their `Play_intensity`.
-    
-  - Show them what high-level gameplay looks like. Since they are good at the game (high win rate), challenge them with a "Hard Mode" or a competitive ladder to spark interest.
+    - Introduce "rebound" rewards after a loss streak. Give players the exact resources (Gems or Card upgrades) required to lift their `Card_score` so they feel they are moving forward despite the losses.
+
+- Targeted at the "Bored" Cluster 0:
+
+    - Introduce daily login rewards or short-term events targeted at this cluster. Tie these events to Gems to increase player engagement.
+
+    - Because they win easily, fast-track them toward a competitive ladder, "Hard Mode," or exclusive premium content where they can flex their high win rate and spend their accumulated gems.
   
 - Since `Overall_progress` and `Card_score` are such heavy predictors, churning is happening early.
     - Smooth out the "Card Score" progression. If a player’s score is below the Z-score average by Level X, trigger a "Special Starter Pack" offer.
     - Check if there is a specific level or card-unlock threshold where progress slows down significantly.
 
-- `Gems` is a mid-tier predictor. The SHAP plot shows that having low Gems is correlated to churn.
-    - Give small amounts of gems for completing tasks or quests (like playing 5 matches a day). This increases `Play_intensity` and provides the `Gems` needed to improve `Card_score`.
+- `Gems` is a mid-tier predictor. The SHAP plot shows that having low Gems is correlated to churn. Give small amounts of gems for completing tasks or quests. This increases `Play_intensity` and provides the `Gems` needed to improve `Card_score`.
 
 
 ## Tech Stack
-* Languages: Python (Pandas, NumPy)
+* Languages: Python (Pandas, NumPy), SQL(Google)
 * Frameworks: Scikit-Learn (Kmeans, RandomForest), SHAP
 * Validation: 60/20/20 Train/Validation/Test split
 * To run this notebook locally, please refer to the [requirements.txt](requirements.txt) for environment dependencies.
 
 ## Next steps
-- Feature Engineering: Since Tenure is a lower-impact feature, consider creating a "Velocity" feature (e.g., Progress / Tenure). A player who progresses quickly but then stops is a different churn risk than one who never progressed at all.
+- Since Tenure is a lower-impact feature, include a "Velocity" feature to train the model (e.g., Progress / Tenure). A player who progresses quickly but then stops is a different churn risk than one who never progressed at all.
 
-- Address False Positives: To improve precision, look at the players your model thought would churn but didn't. What did they do? Did they join a guild? Did they make a small purchase? Use those actions as "Retention Nudges" for the at-risk clusters.
+- To improve precision, look at the players the model thought would churn but didn't in detail. Recognize any action that can serve as a Retention driver for the at-risk clusters.
