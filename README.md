@@ -11,7 +11,7 @@ The goal of this project is to develop a robust churn detection system for a mob
 
 ## Project Workflow
 ### 1. Data Ingestion and Cleaning
-Notebook: [1_read_df.ipynb](1_read_df.ipynb)
+Query Logic: [1_read_df.sql](1_read_df.sql)
 - This stage focuses on consolidating three primary data sources: general.csv, cards.csv, and campaigns.csv.
 
 - Players with impossible statistics (e.g., negative Gold/Gems or excessive play intensity) are removed to ensure data integrity.
