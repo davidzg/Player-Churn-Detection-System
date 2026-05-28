@@ -1,13 +1,18 @@
 # Player Churn Archetype & Predictive Analysis
 
 ## Project Overview
-The goal of this project is to develop a robust churn detection system for a mobile game. The methodology follows a two-stage approach:
 
-- **Unsupervised Profiling:** Utilizing a K-Means Clustering model to segment the player base into distinct archetypes based on behavior and progression.
+The goal of this project is to develop a robust churn detection system for a mobile game. Rather than just applying machine learning to a pre-cleaned dataset, this project demonstrates an end-to-end data pipeline—from cloud data warehousing and advanced SQL transformations to predictive modeling. 
 
-- **Supervised Prediction:** Integrating these cluster labels as features into a Random Forest classifier. This allows the model to obtain player "context" to predict the likelihood of churn and identify the specific drivers behind player attrition through SHAP value analysis.
+The methodology follows a comprehensive three-stage approach:
 
-**[Read the Executive Summary for Stakeholders](Reports/Executive_summary.MD)**
+- **Data Engineering & Feature Creation (BigQuery & SQL):** Ingesting and processing over 5.1 million rows of real, production-level game data via Google BigQuery. Complex SQL transformations were utilized to consolidate disparate datasets, enforce data integrity (filtering out impossible statistics), and engineer vital custom metrics (such as `Card_score` and `Overall_progress`) prior to modeling.
+
+- **Unsupervised Profiling (Machine Learning):** Utilizing a K-Means Clustering model to segment the player base into distinct archetypes based on their behavior and progression features engineered in the database.
+
+- **Supervised Prediction (Machine Learning):** Integrating these cluster labels as features into a Random Forest classifier. This provides the model with player "context" to predict the likelihood of churn, while SHAP value analysis pinpoints the specific drivers behind player attrition.
+
+**[Read the Executive Summary for Stakeholders](./Reports/Executive_summary.MD)**
 
 ## Project Workflow
 
