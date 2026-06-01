@@ -16,10 +16,12 @@ The methodology follows a comprehensive three-stage approach:
 
 ## Project Workflow
 
-### 0. Data Anonymization & Extraction
+### 1. Data Ingestion
+
+#### 1.1 Data Anonymization & Extraction
 This project uses real, production-level game data. To comply with data privacy standards, the data was strictly anonymized resulting in four core datasets (general, cards, tutorial, and campaigns)
 
-### 1. Data Ingestion (Cloud Storage)
+#### 1.2 Data Ingestion (Cloud Storage)
 
 Data Ingestion Script: [1_data_ingestion.py](1_data_ingestion.py)
 
