@@ -16,10 +16,10 @@ The methodology follows a comprehensive three-stage approach:
 
 ## Project Workflow
 
-### 1. Data Anonymization & Extraction
+### 0. Data Anonymization & Extraction
 This project uses real, production-level game data. To comply with data privacy standards, the data was strictly anonymized resulting in four core datasets (general, cards, tutorial, and campaigns)
 
-### 2: Data Ingestion (Cloud Storage)
+### 1. Data Ingestion (Cloud Storage)
 
 Data Ingestion Script: [1_data_ingestion.py](1_data_ingestion.py)
 
@@ -28,7 +28,7 @@ In this stage the anonymized data was ingested into BigQuery to handle the scale
 ![alt text](Images/BigQuery.png)
 *Google BigQuery console displaying the active schema architecture and storage details for the 5.1-million-row card dataset.*
 
-### 3. Data Transformation and Preparation
+### 2. Data Transformation and Preparation
 
 Query Logic: [2_read_df.sql](2_read_df.sql)
 
@@ -43,6 +43,7 @@ Query Logic: [2_read_df.sql](2_read_df.sql)
 - Custom metrics like `Card_score` (normalized power across rarities) and `Overall_progress` (campaign completion percentage) are engineered and merged into a master dataframe.
 
 ### 3. Feature Engineering & Machine Learning
+Notebook: [3_modeling.ipynb](https://colab.research.google.com/github/davidzg/Player-Churn-Detection-System/blob/main/3_modeling.ipynb)
 #### 3.1. Feature selection
 
 - `Overall_progress`: It summarizes how deep into the game the player is.
@@ -80,7 +81,6 @@ In this project, a K-Means clustering was applied to a dataset of 17,000+ player
 
 
 #### 3.3. Supervised Prediction (RandomForest)
-Notebook: [3_modeling.ipynb](3_modeling.ipynb)
 
 To validate the clustering, the `Cluster` ID is included as a feature in the Random Forest. Note that this variable is a raw number (no One-Hot encoded), as the Random Forest's structure is robust enough to handle these integer labels as decision splits.
 
